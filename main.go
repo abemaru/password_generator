@@ -8,18 +8,39 @@ import (
 )
 
 func main() {
-	p := generator()
+	p := generatePassword()
 	fmt.Printf(p)
 }
 
 const rs2Letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
-func generator() string {
-	var pwLen = flag.Int("l", 6, "password length")
-	
+const (
+	lowerCase = "abcdefghijklmnopqrstuvwxyz"
+
+	upperCase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
+	digit = "1234567890"
+)
+
+type ParserArguments struct {
+	length int
+}
+
+func getArguments() *ParserArguments {
+	var l = flag.Int("l", 6, "password length")
 	flag.Parse()
 
-	b := make([]byte, *pwLen)
+	g := &ParserArguments{
+		length: *l,
+	}
+
+	return g 
+}
+
+func generatePassword() string {
+	p := getArguments()
+
+	b := make([]byte, p.length)
 	for i := range b {
 		n, err := rand.Int(rand.Reader, big.NewInt(int64(len(rs2Letters))))
 		if err != nil {
